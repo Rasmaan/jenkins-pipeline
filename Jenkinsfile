@@ -1,14 +1,17 @@
 pipeline {
     agent any
+    tools {
+        gradle 'Gradle' 
+    }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh './gradlew clean build' 
             }
         }
         stage('Unit and Integration Tests') {
             steps {
-                sh 'mvn test'
+                sh './gradlew test' // Runs tests using Gradle
             }
             post {
                 success {
@@ -31,12 +34,12 @@ pipeline {
         }
         stage('Code Analysis') {
             steps {
-                sh 'mvn sonar:sonar'
+                sh './gradlew check' 
             }
         }
         stage('Security Scan') {
             steps {
-                sh 'dependency-check.sh --project my-app'
+                sh './gradlew dependencyCheckAnalyze' 
             }
             post {
                 success {
@@ -59,17 +62,17 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                sh 'scp target/my-app.jar ec2-user@staging-server:/path/to/deploy'
+                sh 'scp build/libs/my-app.jar ec2-user@staging-server:/path/to/deploy' 
             }
         }
         stage('Integration Tests on Staging') {
             steps {
-                sh 'run-staging-tests.sh'
+                sh './gradlew integrationTest' 
             }
         }
         stage('Deploy to Production') {
             steps {
-                sh 'scp target/my-app.jar ec2-user@production-server:/path/to/deploy'
+                sh 'scp build/libs/my-app.jar ec2-user@production-server:/path/to/deploy' 
             }
         }
     }
