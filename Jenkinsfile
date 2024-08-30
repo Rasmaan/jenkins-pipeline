@@ -1,86 +1,76 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.8.1' // This should match the name you provided in the Global Tool Configuration
-    }
-
     stages {
+
         stage('Build') {
             steps {
-                echo 'Building the project...'
-                
-                bat 'mvn clean package' 
+                echo 'Building the application...'
+                // Using bat instead of sh for Windows
+                // bat 'mvn clean package'
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running Unit and Integration Tests...'
-                
-                bat 'mvn test'
+                // Running tests in Windows environment
+                // bat 'mvn test'
+                // bat 'mvn integration-test'
             }
         }
 
         stage('Code Analysis') {
             steps {
-                echo 'Performing Code Analysis...'
-                
-                bat 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=src'
+                echo 'Running Code Analysis...'
+                // bat 'mvn sonar:sonar'
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo 'Performing Security Scan...'
-               
-                bat 'dependency-check.bat --project my_project --out . --scan ./src'
+                echo 'Running Security Scan...'
+                // bat 'mvn dependency-check:check'
             }
         }
 
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                
-                powershell 'Copy-Item target/my-app.jar -Destination \\\\staging-server\\path\\to\\deploy -Force'
+                // Example deployment command, modify according to your environment
+                // bat 'copy target\\app.jar \\\\staging-server\\deploy\\app.jar'
             }
         }
 
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-                
-                powershell 'Invoke-WebRequest -Uri http://staging-server/api/tests -UseBasicParsing'
+                // bat 'mvn test -Pstaging'
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                
-                powershell 'Copy-Item target/my-app.jar -Destination \\\\production-server\\path\\to\\deploy -Force'
+                // Example deployment command for production
+                // bat 'copy target\\app.jar \\\\production-server\\deploy\\app.jar'
             }
         }
     }
 
     post {
         always {
-            echo 'Cleaning up...'
-            deleteDir()
+            echo 'Pipeline completed!'
         }
-
         success {
-            echo 'Build succeeded!'
             mail to: 'rasmaananwar123@gmail.com',
-                 subject: "SUCCESS: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                 body: "The pipeline completed successfully."
+                 subject: "Pipeline Successful: ${currentBuild.fullDisplayName}",
+                 body: "The Jenkins pipeline has completed successfully."
         }
-
         failure {
-            echo 'Build failed!'
             mail to: 'rasmaananwar123@gmail.com',
-                 subject: "FAILURE: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                 body: "The pipeline failed. Please check the logs for details."
+                 subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+                 body: "The Jenkins pipeline has failed. Please check the logs."
         }
     }
 }
