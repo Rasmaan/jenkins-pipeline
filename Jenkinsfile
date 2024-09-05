@@ -29,21 +29,21 @@ pipeline {
                 success {
                     archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
-                        // Send success email with log attachment
-                        mail to: 'rasmaananwar123@gmail.com',
-                             subject: "Unit and Integration Tests Successful: ${currentBuild.fullDisplayName}",
-                             body: "The Unit and Integration Tests stage has completed successfully.",
-                             attachmentsPattern: 'unit-tests-log.txt'
+                        // Send success email with log attachment using emailext
+                        emailext attachmentsPattern: 'unit-tests-log.txt',
+                                 to: 'rasmaananwar123@gmail.com',
+                                 subject: "Unit and Integration Tests Successful: ${currentBuild.fullDisplayName}",
+                                 body: "The Unit and Integration Tests stage has completed successfully."
                     }
                 }
                 failure {
                     archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
-                        // Send failure email with log attachment
-                        mail to: 'rasmaananwar123@gmail.com',
-                             subject: "Unit and Integration Tests Failed: ${currentBuild.fullDisplayName}",
-                             body: "The Unit and Integration Tests stage has failed. Please check the attached logs.",
-                             attachmentsPattern: 'unit-tests-log.txt'
+                        // Send failure email with log attachment using emailext
+                        emailext attachmentsPattern: 'unit-tests-log.txt',
+                                 to: 'rasmaananwar123@gmail.com',
+                                 subject: "Unit and Integration Tests Failed: ${currentBuild.fullDisplayName}",
+                                 body: "The Unit and Integration Tests stage has failed. Please check the attached logs."
                     }
                 }
             }
@@ -73,21 +73,21 @@ pipeline {
                 success {
                     archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
-                        // Send success email with log attachment
-                        mail to: 'rasmaananwar123@gmail.com',
-                             subject: "Security Scan Successful: ${currentBuild.fullDisplayName}",
-                             body: "The Security Scan stage has completed successfully.",
-                             attachmentsPattern: 'security-scan-log.txt'
+                        // Send success email with log attachment using emailext
+                        emailext attachmentsPattern: 'security-scan-log.txt',
+                                 to: 'rasmaananwar123@gmail.com',
+                                 subject: "Security Scan Successful: ${currentBuild.fullDisplayName}",
+                                 body: "The Security Scan stage has completed successfully."
                     }
                 }
                 failure {
                     archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
-                        // Send failure email with log attachment
-                        mail to: 'rasmaananwar123@gmail.com',
-                             subject: "Security Scan Failed: ${currentBuild.fullDisplayName}",
-                             body: "The Security Scan stage has failed. Please check the attached logs.",
-                             attachmentsPattern: 'security-scan-log.txt'
+                        // Send failure email with log attachment using emailext
+                        emailext attachmentsPattern: 'security-scan-log.txt',
+                                 to: 'rasmaananwar123@gmail.com',
+                                 subject: "Security Scan Failed: ${currentBuild.fullDisplayName}",
+                                 body: "The Security Scan stage has failed. Please check the attached logs."
                     }
                 }
             }
@@ -120,14 +120,14 @@ pipeline {
             echo 'Pipeline completed!'
         }
         success {
-            mail to: 'rasmaananwar123@gmail.com',
-                 subject: "Pipeline Successful: ${currentBuild.fullDisplayName}",
-                 body: "The Jenkins pipeline has completed successfully."
+            emailext to: 'rasmaananwar123@gmail.com',
+                     subject: "Pipeline Successful: ${currentBuild.fullDisplayName}",
+                     body: "The Jenkins pipeline has completed successfully."
         }
         failure {
-            mail to: 'rasmaananwar123@gmail.com',
-                 subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
-                 body: "The Jenkins pipeline has failed. Please check the logs."
+            emailext to: 'rasmaananwar123@gmail.com',
+                     subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+                     body: "The Jenkins pipeline has failed. Please check the logs."
         }
     }
 }
