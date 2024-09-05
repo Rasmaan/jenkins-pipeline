@@ -6,21 +6,17 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                // Use sh for Unix-based systems
-                // sh 'mvn clean package'
+                // Example: Capturing the build logs
+                sh 'mvn clean package > build-log.txt 2>&1' // Replace with your actual build command
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running Unit and Integration Tests...'
-                // sh 'mvn test'
-                // sh 'mvn integration-test'
-                script {
-                    // Capture logs and save to a file
-                    echo 'Capturing logs for Unit and Integration Tests...'
-                    sh 'echo "Unit and Integration Test logs" > unit-tests-log.txt' // Replace with actual log command if needed
-                }
+                // Example: Capturing the output of test commands
+                sh 'mvn test > unit-tests-log.txt 2>&1' // Replace with actual test command
+                sh 'mvn integration-test >> unit-tests-log.txt 2>&1' // Append integration test logs
                 // List the contents of the workspace to verify the log file is present
                 sh 'pwd' // Print the current working directory
                 sh 'ls -l' // List all files in the current directory
@@ -52,19 +48,16 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Running Code Analysis...'
-                // sh 'mvn sonar:sonar' // Replace with the actual command if needed
+                // Example: Capturing the output of code analysis
+                sh 'mvn sonar:sonar > code-analysis-log.txt 2>&1' // Replace with actual command if needed
             }
         }
 
         stage('Security Scan') {
             steps {
                 echo 'Running Security Scan...'
-                // sh 'mvn dependency-check:check'
-                script {
-                    // Capture logs and save to a file
-                    echo 'Capturing logs for Security Scan...'
-                    sh 'echo "Security Scan logs" > security-scan-log.txt' // Replace with actual log command if needed
-                }
+                // Example: Capturing security scan logs
+                sh 'mvn dependency-check:check > security-scan-log.txt 2>&1' // Replace with actual log command if needed
                 // List the contents of the workspace to verify the log file is present
                 sh 'pwd' // Print the current working directory
                 sh 'ls -l' // List all files in the current directory
@@ -96,21 +89,24 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
-                // sh 'cp target/app.jar /staging-server/deploy/app.jar' // Replace with actual command if needed
+                // Example: Capturing deploy logs
+                sh 'cp target/app.jar /staging-server/deploy/app.jar > deploy-log.txt 2>&1' // Replace with actual command if needed
             }
         }
 
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Running Integration Tests on Staging...'
-                // sh 'mvn test -Pstaging' // Replace with the actual command if needed
+                // Example: Capturing integration test logs on staging
+                sh 'mvn test -Pstaging > staging-tests-log.txt 2>&1' // Replace with actual command if needed
             }
         }
 
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
-                // sh 'cp target/app.jar /production-server/deploy/app.jar' // Replace with actual command if needed
+                // Example: Capturing deploy to production logs
+                sh 'cp target/app.jar /production-server/deploy/app.jar > production-deploy-log.txt 2>&1' // Replace with actual command if needed
             }
         }
     }
