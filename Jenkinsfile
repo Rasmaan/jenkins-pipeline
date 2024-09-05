@@ -20,6 +20,20 @@ pipeline {
             }
         }
 
+        // Send email immediately after the Unit and Integration Tests stage
+        stage('Notify After Tests') {
+            steps {
+                script {
+                    def logs = currentBuild.rawBuild.getLog(100).join('\n')
+                    writeFile file: 'pipeline-log.txt', text: logs
+                    mail to: 'rasmaananwar123@gmail.com',
+                         subject: "Unit and Integration Tests Completed: ${currentBuild.fullDisplayName}",
+                         body: "The Unit and Integration Tests stage has completed. Please check the attached logs.",
+                         attachmentsPattern: 'pipeline-log.txt'
+                }
+            }
+        }
+
         stage('Code Analysis') {
             steps {
                 echo 'Running Code Analysis...'
@@ -34,9 +48,24 @@ pipeline {
             }
         }
 
+        // Send email immediately after the Security Scan stage
+        stage('Notify After Security Scan') {
+            steps {
+                script {
+                    def logs = currentBuild.rawBuild.getLog(100).join('\n')
+                    writeFile file: 'pipeline-log.txt', text: logs
+                    mail to: 'rasmaananwar123@gmail.com',
+                         subject: "Security Scan Completed: ${currentBuild.fullDisplayName}",
+                         body: "The Security Scan stage has completed. Please check the attached logs.",
+                         attachmentsPattern: 'pipeline-log.txt'
+                }
+            }
+        }
+
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging...'
+                // Example deployment command, modify according to your environment
                 // bat 'copy target\\app.jar \\\\staging-server\\deploy\\app.jar'
             }
         }
@@ -51,6 +80,7 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production...'
+                // Example deployment command for production
                 // bat 'copy target\\app.jar \\\\production-server\\deploy\\app.jar'
             }
         }
@@ -60,49 +90,11 @@ pipeline {
         always {
             echo 'Pipeline completed!'
         }
-
-        // Sending success email after tests and security scan stages
-        stage('Send Success Email') {
-            when {
-                allOf {
-                    successful()
-                    stage('Unit and Integration Tests')
-                    stage('Security Scan')
-                }
-            }
-            steps {
-                script {
-                    def logs = currentBuild.rawBuild.getLog(100).join('\n') // Fetch last 100 lines of logs
-                    writeFile file: 'pipeline-log.txt', text: logs // Write logs to a file
-
-                    mail to: 'rasmaananwar123@gmail.com',
-                         subject: "Pipeline Successful: ${currentBuild.fullDisplayName}",
-                         body: "The Jenkins pipeline has completed successfully.",
-                         attachmentsPattern: 'pipeline-log.txt' // Attach logs to email
-                }
-            }
+        success {
+            echo 'Pipeline succeeded.'
         }
-
-        // Sending failure email after tests and security scan stages
-        stage('Send Failure Email') {
-            when {
-                allOf {
-                    failure()
-                    stage('Unit and Integration Tests')
-                    stage('Security Scan')
-                }
-            }
-            steps {
-                script {
-                    def logs = currentBuild.rawBuild.getLog(100).join('\n') // Fetch last 100 lines of logs
-                    writeFile file: 'pipeline-log.txt', text: logs // Write logs to a file
-
-                    mail to: 'rasmaananwar123@gmail.com',
-                         subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
-                         body: "The Jenkins pipeline has failed. Please check the attached logs.",
-                         attachmentsPattern: 'pipeline-log.txt' // Attach logs to email
-                }
-            }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
