@@ -6,7 +6,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                // sh 'mvn clean package' // Replace this with the actual build command if needed
+                // Use sh for Unix-based systems
+                // sh 'mvn clean package'
             }
         }
 
@@ -20,10 +21,12 @@ pipeline {
                     echo 'Capturing logs for Unit and Integration Tests...'
                     sh 'echo "Unit and Integration Test logs" > unit-tests-log.txt' // Replace with actual log command if needed
                 }
+                // List the contents of the workspace to verify the log file is present
+                sh 'pwd' // Print the current working directory
+                sh 'ls -l' // List all files in the current directory
             }
             post {
                 success {
-                    // Archive the log file
                     archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
                         // Send success email with log attachment
@@ -34,7 +37,6 @@ pipeline {
                     }
                 }
                 failure {
-                    // Archive the log file
                     archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
                         // Send failure email with log attachment
@@ -63,10 +65,12 @@ pipeline {
                     echo 'Capturing logs for Security Scan...'
                     sh 'echo "Security Scan logs" > security-scan-log.txt' // Replace with actual log command if needed
                 }
+                // List the contents of the workspace to verify the log file is present
+                sh 'pwd' // Print the current working directory
+                sh 'ls -l' // List all files in the current directory
             }
             post {
                 success {
-                    // Archive the log file
                     archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
                         // Send success email with log attachment
@@ -77,7 +81,6 @@ pipeline {
                     }
                 }
                 failure {
-                    // Archive the log file
                     archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
                         // Send failure email with log attachment
