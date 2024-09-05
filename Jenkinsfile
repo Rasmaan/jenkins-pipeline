@@ -27,23 +27,23 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
-                        // Send success email with log attachment using emailext
-                        emailext attachmentsPattern: 'unit-tests-log.txt',
-                                 to: 'rasmaananwar123@gmail.com',
-                                 subject: "Unit and Integration Tests Successful: ${currentBuild.fullDisplayName}",
-                                 body: "The Unit and Integration Tests stage has completed successfully."
+                        // Read the log content
+                        def logContent = readFile('unit-tests-log.txt')
+                        // Send success email with log content in the body
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Unit and Integration Tests Successful: ${currentBuild.fullDisplayName}",
+                             body: "The Unit and Integration Tests stage has completed successfully.\n\nLog Details:\n${logContent}"
                     }
                 }
                 failure {
-                    archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
-                        // Send failure email with log attachment using emailext
-                        emailext attachmentsPattern: 'unit-tests-log.txt',
-                                 to: 'rasmaananwar123@gmail.com',
-                                 subject: "Unit and Integration Tests Failed: ${currentBuild.fullDisplayName}",
-                                 body: "The Unit and Integration Tests stage has failed. Please check the attached logs."
+                        // Read the log content
+                        def logContent = readFile('unit-tests-log.txt')
+                        // Send failure email with log content in the body
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Unit and Integration Tests Failed: ${currentBuild.fullDisplayName}",
+                             body: "The Unit and Integration Tests stage has failed. Please check the details below:\n\nLog Details:\n${logContent}"
                     }
                 }
             }
@@ -71,23 +71,23 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
-                        // Send success email with log attachment using emailext
-                        emailext attachmentsPattern: 'security-scan-log.txt',
-                                 to: 'rasmaananwar123@gmail.com',
-                                 subject: "Security Scan Successful: ${currentBuild.fullDisplayName}",
-                                 body: "The Security Scan stage has completed successfully."
+                        // Read the log content
+                        def logContent = readFile('security-scan-log.txt')
+                        // Send success email with log content in the body
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Security Scan Successful: ${currentBuild.fullDisplayName}",
+                             body: "The Security Scan stage has completed successfully.\n\nLog Details:\n${logContent}"
                     }
                 }
                 failure {
-                    archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
-                        // Send failure email with log attachment using emailext
-                        emailext attachmentsPattern: 'security-scan-log.txt',
-                                 to: 'rasmaananwar123@gmail.com',
-                                 subject: "Security Scan Failed: ${currentBuild.fullDisplayName}",
-                                 body: "The Security Scan stage has failed. Please check the attached logs."
+                        // Read the log content
+                        def logContent = readFile('security-scan-log.txt')
+                        // Send failure email with log content in the body
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Security Scan Failed: ${currentBuild.fullDisplayName}",
+                             body: "The Security Scan stage has failed. Please check the details below:\n\nLog Details:\n${logContent}"
                     }
                 }
             }
@@ -120,14 +120,14 @@ pipeline {
             echo 'Pipeline completed!'
         }
         success {
-            emailext to: 'rasmaananwar123@gmail.com',
-                     subject: "Pipeline Successful: ${currentBuild.fullDisplayName}",
-                     body: "The Jenkins pipeline has completed successfully."
+            mail to: 'rasmaananwar123@gmail.com',
+                 subject: "Pipeline Successful: ${currentBuild.fullDisplayName}",
+                 body: "The Jenkins pipeline has completed successfully."
         }
         failure {
-            emailext to: 'rasmaananwar123@gmail.com',
-                     subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
-                     body: "The Jenkins pipeline has failed. Please check the logs."
+            mail to: 'rasmaananwar123@gmail.com',
+                 subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+                 body: "The Jenkins pipeline has failed. Please check the logs."
         }
     }
 }
