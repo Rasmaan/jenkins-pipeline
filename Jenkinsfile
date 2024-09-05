@@ -17,12 +17,16 @@ pipeline {
                 // Running tests in Windows environment
                 // bat 'mvn test'
                 // bat 'mvn integration-test'
+                script {
+                    // Save logs to a file manually
+                    echo 'Capturing logs for Unit and Integration Tests...'
+                    sh 'echo "Unit and Integration Test logs" > unit-tests-log.txt'  // Replace with actual log command if needed
+                }
             }
             post {
                 success {
+                    archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
-                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
-                        writeFile file: 'unit-tests-log.txt', text: logs
                         mail to: 'rasmaananwar123@gmail.com',
                              subject: "Unit and Integration Tests Successful: ${currentBuild.fullDisplayName}",
                              body: "The Unit and Integration Tests stage has completed successfully.",
@@ -30,9 +34,8 @@ pipeline {
                     }
                 }
                 failure {
+                    archiveArtifacts artifacts: 'unit-tests-log.txt', allowEmptyArchive: true
                     script {
-                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
-                        writeFile file: 'unit-tests-log.txt', text: logs
                         mail to: 'rasmaananwar123@gmail.com',
                              subject: "Unit and Integration Tests Failed: ${currentBuild.fullDisplayName}",
                              body: "The Unit and Integration Tests stage has failed. Please check the attached logs.",
@@ -53,12 +56,16 @@ pipeline {
             steps {
                 echo 'Running Security Scan...'
                 // bat 'mvn dependency-check:check'
+                script {
+                    // Save logs to a file manually
+                    echo 'Capturing logs for Security Scan...'
+                    sh 'echo "Security Scan logs" > security-scan-log.txt'  // Replace with actual log command if needed
+                }
             }
             post {
                 success {
+                    archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
-                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
-                        writeFile file: 'security-scan-log.txt', text: logs
                         mail to: 'rasmaananwar123@gmail.com',
                              subject: "Security Scan Successful: ${currentBuild.fullDisplayName}",
                              body: "The Security Scan stage has completed successfully.",
@@ -66,9 +73,8 @@ pipeline {
                     }
                 }
                 failure {
+                    archiveArtifacts artifacts: 'security-scan-log.txt', allowEmptyArchive: true
                     script {
-                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
-                        writeFile file: 'security-scan-log.txt', text: logs
                         mail to: 'rasmaananwar123@gmail.com',
                              subject: "Security Scan Failed: ${currentBuild.fullDisplayName}",
                              body: "The Security Scan stage has failed. Please check the attached logs.",
