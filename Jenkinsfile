@@ -18,18 +18,26 @@ pipeline {
                 // bat 'mvn test'
                 // bat 'mvn integration-test'
             }
-        }
-
-        // Send email immediately after the Unit and Integration Tests stage
-        stage('Notify After Tests') {
-            steps {
-                script {
-                    def logs = currentBuild.rawBuild.getLog(100).join('\n')
-                    writeFile file: 'pipeline-log.txt', text: logs
-                    mail to: 'rasmaananwar123@gmail.com',
-                         subject: "Unit and Integration Tests Completed: ${currentBuild.fullDisplayName}",
-                         body: "The Unit and Integration Tests stage has completed. Please check the attached logs.",
-                         attachmentsPattern: 'pipeline-log.txt'
+            post {
+                success {
+                    script {
+                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'unit-tests-log.txt', text: logs
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Unit and Integration Tests Successful: ${currentBuild.fullDisplayName}",
+                             body: "The Unit and Integration Tests stage has completed successfully.",
+                             attachmentsPattern: 'unit-tests-log.txt'
+                    }
+                }
+                failure {
+                    script {
+                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'unit-tests-log.txt', text: logs
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Unit and Integration Tests Failed: ${currentBuild.fullDisplayName}",
+                             body: "The Unit and Integration Tests stage has failed. Please check the attached logs.",
+                             attachmentsPattern: 'unit-tests-log.txt'
+                    }
                 }
             }
         }
@@ -46,18 +54,26 @@ pipeline {
                 echo 'Running Security Scan...'
                 // bat 'mvn dependency-check:check'
             }
-        }
-
-        // Send email immediately after the Security Scan stage
-        stage('Notify After Security Scan') {
-            steps {
-                script {
-                    def logs = currentBuild.rawBuild.getLog(100).join('\n')
-                    writeFile file: 'pipeline-log.txt', text: logs
-                    mail to: 'rasmaananwar123@gmail.com',
-                         subject: "Security Scan Completed: ${currentBuild.fullDisplayName}",
-                         body: "The Security Scan stage has completed. Please check the attached logs.",
-                         attachmentsPattern: 'pipeline-log.txt'
+            post {
+                success {
+                    script {
+                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'security-scan-log.txt', text: logs
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Security Scan Successful: ${currentBuild.fullDisplayName}",
+                             body: "The Security Scan stage has completed successfully.",
+                             attachmentsPattern: 'security-scan-log.txt'
+                    }
+                }
+                failure {
+                    script {
+                        def logs = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'security-scan-log.txt', text: logs
+                        mail to: 'rasmaananwar123@gmail.com',
+                             subject: "Security Scan Failed: ${currentBuild.fullDisplayName}",
+                             body: "The Security Scan stage has failed. Please check the attached logs.",
+                             attachmentsPattern: 'security-scan-log.txt'
+                    }
                 }
             }
         }
@@ -89,12 +105,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed!'
-        }
-        success {
-            echo 'Pipeline succeeded.'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
